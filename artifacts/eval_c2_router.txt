@@ -1,0 +1,22 @@
+v01  PASS  route     tool->tool     ok  inc 2/2  exc 0/0
+v02  FAIL  route   policy->policy   ok  inc 1/2  exc 1/1
+      missing include: /25%|25 ?percent|quarter/
+      answer: Sezzle's pay-in-4 plan splits your purchase into four equal installments over six weeks. The first installment is charged at the time of purchase, and the remaining three installments are charged every two weeks thereafter. You can pay any installment early at no additional cost, and early payment does not change the due dates of later installments. If you need to reschedule an upcoming installment, the first reschedule is free and can push the date up to two weeks. Each subsequent reschedule costs $5, and you can reschedule a maximum of three times per order. It's important to request a reschedule at least 24 hours before the installment's due date to ensure it is processed in time.
+v03  PASS  route     both->both     ok  inc 2/2  exc 0/0
+v04  FAIL  route     both->both     ok  inc 1/2  exc 0/0
+      missing include: /repa/
+      answer: I understand you missed a payment on your Circuit City Lights order, and you're asking if you can reschedule it. Unfortunately, with your current order status, rescheduling is not an option. The next upcoming installment for this order is due on July 24th, and since it's already past that date, we can't reschedule it. However, you still have 3 reschedules remaining on this order, so you might consider using one of those to avoid any additional fees. If you need further assistance, please let me know!
+v05  FAIL  route escalate->both     XX  inc 0/1  exc 2/2
+      route miss: wanted escalate, got both
+      missing include: /escalat|human (agent|specialist|team)|connect you|hand(ing)? (you )?(off|over)|transfer/
+      answer: Your order with Nordic Kicks was declined yesterday because the total amount of $91.95 for the upcoming installment on 2026-07-07 exceeded your current spending limit. Your spending limit is dynamic and depends on your payment history, order size, and time as a customer. To raise your limit, it's best to pay down any open orders and maintain on-time payments. If you need further assistance, please let us know and we'll be happy to help.
+v06  PASS  route escalate->escalate ok  inc 4/4  exc 0/0
+v07  PASS  route escalate->escalate ok  inc 1/1  exc 2/2
+v08  PASS  route   policy->policy   ok  inc 1/1  exc 0/0
+v09  PASS  route escalate->escalate ok  inc 2/2  exc 0/0
+v10  FAIL  route     both->tool     XX  inc 2/3  exc 0/0
+      route miss: wanted both, got tool
+      missing include: /remaining|unpaid|outstanding|balance/
+      answer: The refund for your Circuit City Lights order has been issued and is currently processing. According to the information provided, the refund amount of $185.19 was issued on June 28, and it is within the standard window for processing. Typically, refunds are returned to the shopper's payment method within 3–10 business days. Since it has only been 3 business days since the refund was issued, please allow additional time for the funds to appear in your account.
+
+PASS 6/10   route-correct 8/10

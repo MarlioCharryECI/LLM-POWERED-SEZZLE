@@ -3,8 +3,9 @@
 The 10 visible cases were used as a **regression harness**, not a target. All runs are at
 `temperature 0` against the frozen clock (`orders.json.today = 2026-07-01`). `eval.py` checks
 three things per case: predicted route, every `must_include` regex, and no `must_not_include`
-regex. Artifacts: `artifacts/answers_first.jsonl` + `eval_first.txt` (first), the per-change
-snapshots `_answers_c1..c3.jsonl`, and `answers_final.jsonl` + `eval_final.txt` (final).
+regex. Every number below is reproducible from committed artifacts: `answers_first.jsonl` +
+`eval_first.txt` (first), `answers_c1..c3` + `eval_c1..c3` (each change), and
+`answers_final.jsonl` + `eval_final.txt` (final).
 
 ## First run — and a harness bug caught before trusting it
 The first scoring flagged v07 for "waived"/"I've paused" it never said, and v02 for "ord_"

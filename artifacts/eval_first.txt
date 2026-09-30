@@ -1,3 +1,7 @@
+# First run over the visible golden set, scored with the corrected eval.py.
+# (The original scorer had an inverted must_not_include check; see ITERATION.md
+#  "First run". The model answers in answers_first.jsonl are unchanged.)
+
 v01  PASS  route     tool->tool     ok  inc 2/2  exc 0/0
 v02  FAIL  route   policy->policy   ok  inc 0/2  exc 1/1
       missing include: /25%|25 ?percent|quarter/

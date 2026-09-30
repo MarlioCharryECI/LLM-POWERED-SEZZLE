@@ -1,0 +1,22 @@
+v01  PASS  route     tool->tool     ok  inc 2/2  exc 0/0
+v02  PASS  route   policy->policy   ok  inc 2/2  exc 1/1
+v03  PASS  route     both->both     ok  inc 2/2  exc 0/0
+v04  FAIL  route     both->both     ok  inc 1/2  exc 0/0
+      missing include: /cannot|can't|can not|unable|not (be )?(re)?schedul/
+      answer: I understand you missed a payment on your Circuit City Lights order and would like to reschedule it. Unfortunately, any failed installment must be repaid, including any applicable fee, rather than rescheduled. Only upcoming installments can be rescheduled. Please ensure you address the missed payment to avoid further issues.
+v05  FAIL  route escalate->both     XX  inc 0/1  exc 2/2
+      route miss: wanted escalate, got both
+      missing include: /escalat|human (agent|specialist|team)|connect you|hand(ing)? (you )?(off|over)|transfer/
+      answer: Your order from Nordic Kicks was declined yesterday because the total amount of $91.95 exceeded your current spending power. Your spending limit is dynamic and depends on your payment history, the size of the order, and how long you've been a customer. To increase your spending power, it's recommended that you pay down any open orders and maintain on-time payments. If you have any further questions or need assistance, please feel free to reach out.
+v06  FAIL  route escalate->escalate ok  inc 2/4  exc 0/0
+      missing include: /90 days|90-day|ninety days/
+      missing include: /15 days|15-day|fifteen days/
+      answer: I understand you're experiencing an issue with Bloom & Vine. To help resolve this, I need to escalate your case to a human agent who can investigate further. During the process, any upcoming installments on this order will be paused, meaning you won't be charged until the dispute is resolved. Please allow up to 20 business days for a resolution. In the meantime, I advise you to contact Bloom & Vine directly to see if they can assist you. Once the agent reviews your case, they will provide you with the next steps. Thank you for your patience, and I'm here to support you through this process.
+v07  PASS  route escalate->escalate ok  inc 1/1  exc 2/2
+v08  PASS  route   policy->policy   ok  inc 1/1  exc 0/0
+v09  PASS  route escalate->escalate ok  inc 2/2  exc 0/0
+v10  FAIL  route     both->tool     XX  inc 3/3  exc 0/0
+      route miss: wanted both, got tool
+      answer: The refund for your Circuit City Lights order has been issued and is currently processing. According to our policies, the refund will be applied to the remaining unpaid installments first, and any remaining amount will be returned to your payment method within 3–10 business days. You can expect to see the funds in your account shortly.
+
+PASS 6/10   route-correct 8/10

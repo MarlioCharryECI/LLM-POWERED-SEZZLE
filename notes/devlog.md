@@ -136,8 +136,9 @@ PASS: v01 v03 v07 v08 v09.  FAIL: v02 v04 v05 v06 v10.
 - artifacts/eval_first.txt (corrected-scorer score: 5/10)
 
 ## Step 5 — fixes by class, measured per change
-Per-change answer snapshots kept: artifacts/_answers_c1.jsonl (truncation),
-_c2 (router), _c3 (v04 grounding). Final: artifacts/answers_final.jsonl + eval_final.txt.
+Per-change snapshots kept (answers + scores): artifacts/answers_c1_truncation,
+answers_c2_router, answers_c3_grounding (+ matching eval_c1..c3). Final:
+artifacts/answers_final.jsonl + eval_final.txt.
 
 DELTA TABLE (PASS / route-correct over 10):
 - Baseline (corrected scorer) ........ 5 / 7   fail: v02 v04 v05 v06 v10
