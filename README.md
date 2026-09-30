@@ -71,10 +71,10 @@ artifacts/    answers_first/final.jsonl, eval_first/final.txt,
 notes/        devlog.md (raw working log), probe scripts
 docs/         PROMPT.md, SUBMISSION.md (the original brief)
 ```
-`notes/devlog.md` is my unedited working log. The distilled version is `ITERATION.md`; the log
-is included only for readers who want to see the raw reasoning as it happened.
+`notes/devlog.md` is my working log from the build. The distilled version is `ITERATION.md`;
+the log is included only for readers who want the raw reasoning as it happened.
 
-## Honestly unfinished
+## unfinished
 - **Routing ceiling.** The 7B sometimes labels a refund-status question as `tool` instead of
   `both`. The answer content is still correct; only the route label is wrong.
 - **Run-to-run variance.** Even at temperature 0, local inference varies enough to swing one

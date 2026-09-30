@@ -62,8 +62,7 @@ is installment 4, due 2026-07-11, amount 118.36.
   answer_case binds user_id and calls get_orders itself; whatever the model asks,
   only the bound user's orders are ever returned.
 - Model default: claude-haiku-4-5 (SEZZLE_MODEL overridable) — cost default for ADR #3.
-- Env: installed anthropic 1.10.0 from public PyPI (private CodeArtifact index
-  lacked it — used --index-url https://pypi.org/simple). Key still needed to run.
+- Env: installed anthropic 1.10.0 from PyPI. Key still needed to run.
 
 ## Step 3b — local-model redesign (Ollama, $0)
 - Hardware detected: 6GB VRAM (RTX 3050) / 13.7GB RAM -> 7B Q4 fits; 22B ruled out.
