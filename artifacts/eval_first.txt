@@ -1,0 +1,28 @@
+v01  PASS  route     tool->tool     ok  inc 2/2  exc 0/0
+v02  FAIL  route   policy->policy   ok  inc 0/2  exc 1/1
+      missing include: /25%|25 ?percent|quarter/
+      missing include: /2 weeks|two weeks|14 days|every two/
+      answer: Sezzle's pay-in-4 plan splits your purchase into 4 equal installments over 6 weeks. Here’s how it works based on the policy details provided by Sezzle:
+v03  PASS  route     both->both     ok  inc 2/2  exc 0/0
+v04  FAIL  route     both->both     ok  inc 1/2  exc 0/0
+      missing include: /repa/
+      answer: Unfortunately, you cannot reschedule the upcoming installment for your Circuit City Lights order. The next installment of $45.66 is due on July 24, 2026, and it is currently marked as 'upcoming.' According to our policy, you have already used all your free reschedules, and any future reschedules will incur a fee of $5. If you need assistance managing your payments, please consider contacting our customer support team.
+v05  FAIL  route escalate->both     XX  inc 0/1  exc 2/2
+      route miss: wanted escalate, got both
+      missing include: /escalat|human (agent|specialist|team)|connect you|hand(ing)? (you )?(off|over)|transfer/
+      answer: I understand you're concerned about your order being declined yesterday and would like to know your exact spending limit. Unfortunately, I don't have access to your specific spending limit, as Sezzle does not disclose the exact formula or a shopper's precise limit. However, I can explain the general factors that influence your limit: payment history with Sezzle, order size, and time as a customer. Your limit generally starts small and grows with on-time payments. If you have any specific orders that were declined, I can help you understand the general reasons why they might have been declined. Please let me know if you'd like to discuss any particular orders or if you need further assistance.
+v06  FAIL  route escalate->both     XX  inc 1/4  exc 0/0
+      route miss: wanted escalate, got both
+      missing include: /90 days|90-day|ninety days/
+      missing include: /15 days|15-day|fifteen days/
+      missing include: /paus/
+      answer: I understand you're experiencing an issue with your order from Bloom & Vine. According to our policies, if a merchant never shipped your order, you can open a dispute. Here’s what you need to do next:
+v07  PASS  route escalate->escalate ok  inc 1/1  exc 2/2
+v08  PASS  route   policy->policy   ok  inc 1/1  exc 0/0
+v09  PASS  route escalate->escalate ok  inc 2/2  exc 0/0
+v10  FAIL  route     both->tool     XX  inc 2/3  exc 0/0
+      route miss: wanted both, got tool
+      missing include: /remaining|unpaid|outstanding|balance/
+      answer: Thank you for reaching out. Circuit City Lights has approved your return, and the refund of $185.19 has been issued. Typically, refunds are processed within 3-10 business days. Since the refund was issued on June 28 and it's only been 3 business days, it may take a bit longer for the funds to appear in your account. If you haven't received the refund by this Friday, July 7, please let us know, and we can escalate this to a human agent for further assistance.
+
+PASS 5/10   route-correct 7/10
