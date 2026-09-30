@@ -16,7 +16,7 @@ control flow, easy to diagnose at Checkpoint A.
 
 import time
 
-from agent import prompts
+from agent import guardrails, prompts
 from agent.llm import chat_json
 from agent.tools import get_orders
 
@@ -69,6 +69,10 @@ def answer_case(question: str, user_id: str, return_meta: bool = False) -> dict:
         if not answer:
             result = dict(_ESCALATE_FALLBACK)
         else:
+            # Defense-in-depth: override to a safe escalate if the answer trips a
+            # forbidden pattern (stated limit/decline reason, waiver/pause promise).
+            route, answer, tripped = guardrails.scrub(route, answer)
+            meta["guardrail"] = tripped
             result = {"route": route, "answer": answer}
     except Exception as e:  # never let one case break the batch
         meta["error"] = repr(e)

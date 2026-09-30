@@ -61,6 +61,21 @@ _ROUTER_TASK = """\
                correcting a credit-bureau report; any ad-hoc fee waiver/discount.
                (You will still explain allowed policy in the answer step.)
 
+# Decision rules — apply IN ORDER, stop at the first that matches:
+1. If the shopper is asking you to DO or DISCLOSE a human-only action, choose
+   "escalate" — even if you'll also explain policy, and even if it's about their
+   own order. Human-only actions: reporting/fixing fraud or an unrecognized
+   order; hardship help; FILING or progressing a dispute (item not received / not
+   as described / wrong item); revealing a specific spending limit or the specific
+   reason a particular order was declined; correcting a credit-bureau report;
+   granting any fee waiver, discount, or exception.
+2. Else, if answering correctly needs BOTH a policy rule AND this shopper's order
+   state, choose "both". Includes refund/return status (refunds apply to the
+   remaining unpaid installments first, then 3–10 business days) and
+   reschedule / failed-payment eligibility — not merely reading one stored number.
+3. Else, if it needs only this shopper's stored data, choose "tool".
+4. Else choose "policy".
+
 Return JSON only: {"route": "policy|tool|both|escalate"}.
 """
 
@@ -85,19 +100,30 @@ Route-specific behavior:
   specifics.
 - tool   : answer from the account data.
 - both   : apply the relevant policy rule TO this order's specific state, and be
-  explicit when the rule blocks the request (e.g. a FAILED installment must be
-  repaid, not rescheduled).
+  explicit when the rule blocks the request. In particular: if the account data
+  shows any failed_installments and the shopper asks to move / reschedule / delay
+  a missed or failed payment, tell them plainly that a failed installment CANNOT
+  be rescheduled and must be REPAID (with any applicable fee) — only upcoming
+  installments can be rescheduled. For a refund/return, say the refund is applied
+  to the remaining unpaid installments first, then any remainder returns to their
+  payment method in 3–10 business days.
 - escalate : warmly tell the shopper you're connecting them to a human agent, and
   still explain any policy/eligibility you're allowed to. Specifically:
     * Fraud/unrecognized order: escalate immediately, advise changing the password
       and enabling 2FA, and do NOT read back account or order details.
     * Hardship: be empathetic, do NOT promise any pause, waiver, or extension, and
       do not say whether they'll qualify.
-    * Disputes: explain the process/eligibility (90-day filing window, contact the
-      merchant and allow 15 days, installments pause during investigation) but the
-      filing is human-only.
+    * Disputes: state the specific figures — the dispute must be filed within 90
+      days of the order date; the shopper must first contact the merchant and
+      allow 15 days for a response; and upcoming installments pause during the
+      investigation. The filing itself is human-only.
     * Limits/declines: you may explain the general factors, but NEVER state a
       specific limit number or invent a decline reason.
+
+Format:
+- Write the answer as ONE flowing paragraph of plain prose. Do NOT use bullet
+  points, numbered lists, markdown, or line breaks — the answer is a single JSON
+  string and line breaks/lists break it and get the reply cut off.
 
 Return JSON only: {"answer": "<reply to the shopper>"}.
 """

@@ -134,3 +134,58 @@ PASS: v01 v03 v07 v08 v09.  FAIL: v02 v04 v05 v06 v10.
 ### Artifacts saved
 - artifacts/answers_first.jsonl (first model outputs)
 - artifacts/eval_first.txt (corrected-scorer score: 5/10)
+
+## Step 5 — fixes by class, measured per change
+Per-change answer snapshots kept: artifacts/_answers_c1.jsonl (truncation),
+_c2 (router), _c3 (v04 grounding). Final: artifacts/answers_final.jsonl + eval_final.txt.
+
+DELTA TABLE (PASS / route-correct over 10):
+- Baseline (corrected scorer) ........ 5 / 7   fail: v02 v04 v05 v06 v10
+- C1 truncation (1-paragraph + num_predict 768)
+                                       5 / 7   truncation GONE (v02 inc 0→1, v06 inc 1→3);
+                                               exposed v05 fabricating a decline reason.
+- C2 router ordered decision rules ... 6 / 8   v06 -> escalate PASS.
+- C3 v04 repay grounding + refund specifics
+                                       6 / 8   v02 PASS; v04 gains "repaid"; v10 answer 3/3
+                                               but route still 'tool'.
+- C4 guardrails scrub + specificity polish
+   (v04 "cannot be rescheduled"+repaid; v06 imperative 90/15/pause)
+                                       8 / 9   v04 PASS; v05 PASS via GUARDRAIL (scrub forced
+                                               escalate on fabricated decline reason -
+                                               structural, verified in answers_final v05 =
+                                               canned _LIMIT_SAFE text); v06 PASS.
+NET: 5 -> 8 pass, 7 -> 9 route-correct.
+
+### Per-change hypotheses (for ITERATION.md)
+- C1: schema-JSON can't hold raw newlines -> lists dead-end -> truncation. Force
+  single-paragraph prose + lift num_predict. Confirmed: all answers now complete.
+- C2: router picked 'both' for human-only actions / 'tool' for refunds. Ordered
+  rule "human-only action => escalate FIRST" fixed v06; refund=>both stated.
+- C3: model ignored failed_installments. Explicit repay rule at answer stage.
+- C4: 7B sometimes states a decline reason/limit or promises waivers -> deterministic
+  post-filter forces safe escalate. Structural, not advisory.
+
+### FINAL TAXONOMY — residual failures (honest)
+1. v10 ROUTING CEILING (route-only miss): qwen2.5:7b keeps labeling refund-status
+   as 'tool' despite an explicit refund=>both rule. The ANSWER content is correct;
+   only the route label is wrong. Rejected fixes: deterministic refund->both override
+   (keyword hack the brief warns against) / bigger model (breaks $0). Documented.
+2. RUN-TO-RUN VARIANCE at temperature 0: Ollama output still varies slightly across
+   runs (num_predict/GPU batching nondeterminism). v02/v03/v04/v06/v10 each flipped
+   at least once across C1–final. v03 regressed in the final run: model said
+   "up to 10 days before the due date", conflating days_until_due(=10) with the
+   2-week reschedule window -> missed the "2 weeks" token. This is variance + a
+   grounding slip, NOT chased further (chasing ±1 case = overfitting the 10).
+3. GUARDRAIL SCRUB IS REGEX -> brittle to paraphrase; defense-in-depth, not proof.
+   To be red-teamed in Step 6.
+4. INSTRUCTION BLEED: escalate answers sometimes add extra advice (v06 appended
+   password/2FA). Harmless here; shows the 7B over-applies the security bullet.
+
+### Decision: LOCK final at 8/10.
+Remaining 2 are a documented model-routing ceiling (v10) and inference variance
+(v03), not fixable without a keyword hack or a bigger model. Per the brief, an
+honest residual beats overfitting the visible ten.
+
+### Env note observed during Step 5
+Each `python run_cases.py` cold-loads the model (VRAM evicted between processes),
+so full runs took ~2–4 min; steady-state per-case ~12s. No cost ($0 local).

@@ -52,7 +52,9 @@ def _ollama_chat_json(system, user, schema, model):
         ],
         "stream": False,
         "format": schema,                 # grammar-constrained to this schema
-        "options": {"temperature": 0},    # deterministic
+        # temperature 0 = deterministic; num_predict lifts the default output cap
+        # so longer grounded answers aren't truncated mid-sentence.
+        "options": {"temperature": 0, "num_predict": 768},
     }
     req = urllib.request.Request(
         f"{OLLAMA_URL}/api/chat",
