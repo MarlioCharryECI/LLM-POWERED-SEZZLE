@@ -31,6 +31,17 @@ _PROMISE = re.compile(
     r"[^.]{0,30}\b(waiv\w*|paus\w*|extend\w*)",
     re.IGNORECASE,
 )
+# Passive/active WAIVER promise in any voice ("fees will be waived", "we waived").
+# We scrub waivers broadly because the assistant is never authorized to grant one
+# (the single automatic failed-payment waiver is not assistant-promised). We do
+# NOT scrub "pause" here: pausing is legitimate during a dispute investigation, and
+# a blanket pause-scrub would wrongly clobber correct dispute answers. The gerund
+# "waiving" (e.g. "a human agent can discuss waiving fees") is intentionally NOT
+# matched — that is describing, not promising.
+_WAIVER = re.compile(
+    r"\b(waived|waiver\b|will\s+(be\s+)?waive|have\s+waived|waive\s+your)\b",
+    re.IGNORECASE,
+)
 
 _LIMIT_SAFE = (
     "I'm not able to share the exact reason an individual order was declined or "
@@ -50,6 +61,6 @@ def scrub(route: str, answer: str) -> tuple[str, str, str | None]:
     """Return (route, answer, tripped) — tripped names the rule if overridden."""
     if _DECLINE_REASON.search(answer) or _LIMIT_FIGURE.search(answer):
         return "escalate", _LIMIT_SAFE, "limit_or_decline"
-    if _PROMISE.search(answer):
+    if _PROMISE.search(answer) or _WAIVER.search(answer):
         return "escalate", _PROMISE_SAFE, "waiver_or_pause_promise"
     return route, answer, None

@@ -32,6 +32,14 @@ class TestGuardrailTrips(unittest.TestCase):
         self.assertEqual(route, "escalate")
         self.assertEqual(tripped, "waiver_or_pause_promise")
 
+    def test_passive_waiver_promise(self):
+        # Step 6 red-team finding: passive voice must also be caught.
+        route, _, tripped = scrub(
+            "escalate", "Your payments will be paused and any fees will be waived."
+        )
+        self.assertEqual(route, "escalate")
+        self.assertEqual(tripped, "waiver_or_pause_promise")
+
 
 class TestGuardrailLeavesGoodAnswersAlone(unittest.TestCase):
     """No false positives on answers policy explicitly allows."""

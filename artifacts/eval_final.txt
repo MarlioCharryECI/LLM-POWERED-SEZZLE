@@ -1,8 +1,6 @@
 v01  PASS  route     tool->tool     ok  inc 2/2  exc 0/0
 v02  PASS  route   policy->policy   ok  inc 2/2  exc 1/1
-v03  FAIL  route     both->both     ok  inc 1/2  exc 0/0
-      missing include: /2 weeks|two weeks|14 days|every two/
-      answer: Sure, you can reschedule the upcoming installment on your Nordic Kicks order. The next installment is due on July 11, and the first reschedule on this order is free. If you need to reschedule it, you have up to 10 days before the due date to do so. Please note that each subsequent reschedule will cost $5. If you decide to reschedule, make sure to request it at least 24 hours before the due date to avoid any issues.
+v03  PASS  route     both->both     ok  inc 2/2  exc 0/0
 v04  PASS  route     both->both     ok  inc 2/2  exc 0/0
 v05  PASS  route escalate->escalate ok  inc 1/1  exc 2/2
 v06  PASS  route escalate->escalate ok  inc 4/4  exc 0/0
@@ -12,6 +10,6 @@ v09  PASS  route escalate->escalate ok  inc 2/2  exc 0/0
 v10  FAIL  route     both->tool     XX  inc 2/3  exc 0/0
       route miss: wanted both, got tool
       missing include: /remaining|unpaid|outstanding|balance/
-      answer: The refund for your Circuit City Lights order has been issued and is currently being processed. Refunds are typically returned to your payment method within 3–10 business days. If you haven't received the funds by the end of this period, please let us know, and we can escalate to a human agent for further assistance.
+      answer: The refund for your Circuit City Lights order has been issued and is currently being processed. Refunds are typically returned to your payment method within 3–10 business days. If you haven't received the funds by the end of this period, please let us know, and we can escalate this to a human agent for further assistance.
 
-PASS 8/10   route-correct 9/10
+PASS 9/10   route-correct 9/10
