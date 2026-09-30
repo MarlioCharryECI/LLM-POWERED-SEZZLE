@@ -1,4 +1,7 @@
-# Dev log (live scratch → source for the 4 deliverable docs)
+# Dev log
+
+Raw working log kept during the build. Informal by design; the distilled version is
+`ITERATION.md`.
 
 Frozen clock for all order reasoning: `data/orders.json.today = 2026-07-01`
 (NOT the system date). Evidence anchor: golden v01 → next payment for ord_3006
@@ -9,8 +12,8 @@ is installment 4, due 2026-07-11, amount 118.36.
 - Moved the provided kit into the brief's expected paths (`data/`, `cases/`); left the
   original `docs/` kit untouched as provenance.
 - Renamed 12 policy files to clean ordered slugs `01..12-*.md`.
-- Decision to record (README rename note): matching the brief's canonical layout so
-  `run_cases.py` reads `cases/*.jsonl` and `data/orders.json` as the brief's layout expects.
+- Rationale: match the brief's canonical layout so `run_cases.py` reads `cases/*.jsonl`
+  and `data/orders.json` from the expected paths.
 
 ## Step 1 — contract stub
 - `run_cases.py` written in final shape (pure I/O); intelligence hidden behind
@@ -47,7 +50,6 @@ is installment 4, due 2026-07-11, amount 118.36.
          ord_3001 used=2 → next fee $5, 1 remaining ✓
   * AUTH: u001 cannot read u002's ord_3006 (None); unknown user → empty, no error ✓
   * All 11 tests pass (`python -m unittest discover -s tests`).
-- Supports: DECISIONS #1 & #2, ITERATION (date/auth de-risking), README §Guardrails.
 
 ## Step 3 — prompts.py, llm.py, agent.py
 - Full-context grounding: build_system_prompt() injects all 12 policies (system
@@ -62,7 +64,6 @@ is installment 4, due 2026-07-11, amount 118.36.
 - Model default: claude-haiku-4-5 (SEZZLE_MODEL overridable) — cost default for ADR #3.
 - Env: installed anthropic 1.10.0 from public PyPI (private CodeArtifact index
   lacked it — used --index-url https://pypi.org/simple). Key still needed to run.
-- Supports: DECISIONS #1/#2/#3, PROMPTS §in-system, README §architecture.
 
 ## Step 3b — local-model redesign (Ollama, $0)
 - Hardware detected: 6GB VRAM (RTX 3050) / 13.7GB RAM -> 7B Q4 fits; 22B ruled out.
@@ -79,8 +80,6 @@ is installment 4, due 2026-07-11, amount 118.36.
   account data ('Account data' not in user msg) => can't emit ord_ on policy routes.
 - Fallback: any transport/parse failure => safe escalate.
 - BLOCKER: Ollama not installed/running yet -> Checkpoint A (live run) pending.
-- Supports: DECISIONS #1/#2/#3 + a new candidate ADR (tool-invocation under local
-  constraint), PROMPTS §in-system, README §architecture.
 
 ## Step 4 — Checkpoint A (first run) + diagnosis
 Model tag installed = qwen2.5:7b (7.6B Q4_K_M). Aligned DEFAULT_MODEL.
@@ -93,8 +92,7 @@ Live latency: ~12–13s/case (router ~6s + answer ~7s); full run ~2min.
   _check usage (excludes -> want_match=False) and RESCORED the SAME
   answers_first.jsonl. Model output unchanged; only the scorer was corrected.
 - Buggy scorer said 4/10; corrected scorer says **5/10 pass, 7/10 route-correct**.
-  This is the honest first-run baseline. (Good ITERATION material: measured ->
-  found tooling defect -> fixed harness -> re-measured.)
+  This is the honest first-run baseline.
 
 ### First-run baseline (corrected): PASS 5/10, route-correct 7/10
 PASS: v01 v03 v07 v08 v09.  FAIL: v02 v04 v05 v06 v10.
@@ -157,7 +155,7 @@ DELTA TABLE (PASS / route-correct over 10):
                                                canned _LIMIT_SAFE text); v06 PASS.
 NET: 5 -> 8 pass, 7 -> 9 route-correct.
 
-### Per-change hypotheses (for ITERATION.md)
+### Per-change hypotheses
 - C1: schema-JSON can't hold raw newlines -> lists dead-end -> truncation. Force
   single-paragraph prose + lift num_predict. Confirmed: all answers now complete.
 - C2: router picked 'both' for human-only actions / 'tool' for refunds. Ordered
@@ -184,8 +182,8 @@ NET: 5 -> 8 pass, 7 -> 9 route-correct.
 
 ### Decision: LOCK final at 8/10.
 Remaining 2 are a documented model-routing ceiling (v10) and inference variance
-(v03), not fixable without a keyword hack or a bigger model. Per the brief, an
-honest residual beats overfitting the visible ten.
+(v03), not fixable without a keyword hack or a bigger model. An honest residual
+is worth more than overfitting the ten visible cases.
 
 ### Env note observed during Step 5
 Each `python run_cases.py` cold-loads the model (VRAM evicted between processes),
