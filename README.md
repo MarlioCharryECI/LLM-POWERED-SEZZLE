@@ -72,7 +72,7 @@ notes/        devlog.md (raw working log), probe scripts
 docs/         PROMPT.md, SUBMISSION.md (the original brief)
 ```
 `notes/devlog.md` is my unedited working log. The distilled version is `ITERATION.md`; the log
-is included only for reviewers who want to see the raw reasoning as it happened.
+is included only for readers who want to see the raw reasoning as it happened.
 
 ## Honestly unfinished
 - **Routing ceiling.** The 7B sometimes labels a refund-status question as `tool` instead of

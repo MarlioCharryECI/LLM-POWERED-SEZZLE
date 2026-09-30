@@ -10,7 +10,7 @@ is installment 4, due 2026-07-11, amount 118.36.
   original `docs/` kit untouched as provenance.
 - Renamed 12 policy files to clean ordered slugs `01..12-*.md`.
 - Decision to record (README rename note): matching the brief's canonical layout so
-  `run_cases.py` reads `cases/*.jsonl` and `data/orders.json` the way a reviewer expects.
+  `run_cases.py` reads `cases/*.jsonl` and `data/orders.json` as the brief's layout expects.
 
 ## Step 1 — contract stub
 - `run_cases.py` written in final shape (pure I/O); intelligence hidden behind
