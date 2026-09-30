@@ -24,5 +24,30 @@ is installment 4, due 2026-07-11, amount 118.36.
   `...\Python313\python.exe`; `anthropic` NOT yet installed and no API key set —
   needed from Step 3.
 
+## Step 2 — policies.py, tools.py, tests
+- policies.py: loads all 12 docs, sorted order, wrapped in <policy source="..">
+  tags for citeability. Measured size: **12 policies, 8260 chars (~2k tokens)** —
+  confirms full-stuffing is viable; this number backs DECISIONS #1 (retrieval) and
+  the cost ADR (#3, cacheable prefix).
+- tools.py structural guarantees:
+  * AUTH: every fn takes user_id first; get_order(user_id, order_id) returns None
+    for BOTH foreign and nonexistent ids (indistinguishable → no existence leak).
+    Step 3 binds user_id server-side so the model has no arg to pass a foreign id.
+  * FROZEN CLOCK: get_today() reads orders.json.today (2026-07-01); never now().
+  * PRECOMPUTED (off the LLM): next_upcoming_installment (+days_until_due),
+    failed/paused installments, remaining_unpaid_total, refund business-day window,
+    reschedule fee/remaining. Model verbalizes facts, does no arithmetic.
+- Assumption logged: business-day calc is weekday-only (no holiday calendar) —
+  sufficient for the 3–10 day refund window decision.
+- EVIDENCE (tests pin the fragile math to golden expectations):
+  * v01: ord_3006 next = inst 4, due 2026-07-11, $118.36, 10 days out ✓
+  * v10: ord_3014 refund = 3 business days since 06-28, within 10-day window ✓
+  * v04: ord_3016 surfaces 1 failed installment (#2) ✓
+  * v03: ord_3006 reschedules_used=0 → first free, fee 0, 3 remaining ✓
+         ord_3001 used=2 → next fee $5, 1 remaining ✓
+  * AUTH: u001 cannot read u002's ord_3006 (None); unknown user → empty, no error ✓
+  * All 11 tests pass (`python -m unittest discover -s tests`).
+- Supports: DECISIONS #1 & #2, ITERATION (date/auth de-risking), README §Guardrails.
+
 ## Failure taxonomy (fill at Checkpoint A)
 - (pending first run)
